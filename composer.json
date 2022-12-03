@@ -1,0 +1,12 @@
+{
+    "require": {
+        "mustache/mustache": "^2.14",
+        "twbs/bootstrap": "5.2.3",
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "ClimbingLogbook\\": "/"
+        }
+    }
+}
