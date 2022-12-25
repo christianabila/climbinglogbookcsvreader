@@ -6,7 +6,8 @@
     },
     "autoload": {
         "psr-4": {
-            "ClimbingLogbook\\": "/"
+            "ClimbingLogbook\\": "/",
+            "ClimbingLogbook\\Controller\\": "src/Controller/"
         }
     }
 }
