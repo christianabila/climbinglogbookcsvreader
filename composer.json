@@ -9,5 +9,8 @@
             "ClimbingLogbook\\": "/",
             "ClimbingLogbook\\Controller\\": "src/Controller/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
     }
 }
