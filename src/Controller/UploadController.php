@@ -41,7 +41,7 @@ class UploadController
      * @return string The local save path of the uploaded file on success, Exception thrown otherwise
      * @throws Exception
      */
-    public static function save(array $file): bool
+    public static function save(array $file): string
     {
         $localURI = $_ENV['UPLOAD_DIR'] . basename($file['name']);
         if (move_uploaded_file($file['tmp_name'], $localURI)) {
