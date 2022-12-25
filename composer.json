@@ -6,7 +6,11 @@
     },
     "autoload": {
         "psr-4": {
-            "ClimbingLogbook\\": "/"
+            "ClimbingLogbook\\": "/",
+            "ClimbingLogbook\\Controller\\": "src/Controller/"
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9"
     }
 }
