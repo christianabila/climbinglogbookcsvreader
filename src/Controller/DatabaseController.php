@@ -5,19 +5,15 @@ namespace ClimbingLogbook\Controller;
 use Exception;
 use PDO;
 
+/**
+ * Handles communication with the database.
+ */
 class DatabaseController
 {
     /**
-     * All available labels.
+     * Connect to the database.
      *
-     * @var array [label1Name => label1Id, label2Name => label2Id, ...]
-     */
-    private static $labels;
-
-    /**
-     * Undocumented function
-     *
-     * @return PDO
+     * @return PDO A connection to the database.
      */
     private static function connect(): PDO
     {
@@ -29,118 +25,155 @@ class DatabaseController
     }
 
     /**
-     * Save the log book entries into the database
+     * Close the database connection.
      *
-     * @param array $entries
+     * @param PDO $connection The database connection
      * @return void
      */
-    public static function save(array $entries)
+    private static function close(PDO &$connection): void
     {
-         // I need to know the currently available labels.
-        if (empty(self::$labels)) {
-            self::loadAllLabels();
+        $connection = null;
+    }
+
+    /**
+     * Insert values into a database table
+     *
+     * @param object $entry
+     * @return void
+     */
+    public static function insert(object $entry)
+    {
+        switch (get_class($entry)) {
+            case 'ClimbingLogbook\\Model\\Entry':
+                $table = 'entry';
+                $columns = [
+                    'date',
+                    'grade',
+                    'gradeindex',
+                    'climbtype',
+                    'ascenttype',
+                    'attempts',
+                    'walltype',
+                    'climbname',
+                    'details'
+                ];
+                $values = [
+                    $entry->getDate(),
+                    $entry->getGrade(),
+                    $entry->getGradeIndex(),
+                    $entry->getClimbType(),
+                    $entry->getAscentType(),
+                    $entry->getAttempts(),
+                    $entry->getWallType(),
+                    $entry->getClimbName(),
+                    $entry->getDetails(),
+                ];
+                break;
+            case 'ClimbingLogbook\\Model\\Label':
+                $table = 'label';
+                $columns = ['name'];
+                $values = [
+                    $entry->getName(),
+                ];
+                break;
+            case 'ClimbingLogbook\\Model\\EntryLabels':
+                $table = 'entrylabels';
+                $columns = [
+                    'entryid',
+                    'labelid',
+                ];
+                $values = [
+                    $entry->getEntryId(),
+                    $entry->getLabelId(),
+                ];
         }
+
+        $sql = "
+        INSERT INTO " . $table . "(";
+
+        for ($i = 0; $i < count($columns) - 1; $i++) {
+            $sql .= $columns[$i] . ",";
+        }
+
+        $sql .= $columns[count($columns) - 1] . ") VALUES (";
+
+        for ($i = 0; $i < count($values)-1; $i++) {
+            $sql .= '?,';
+        }
+
+        $sql .= '?)';
 
         $connection = self::connect();
 
-        // I will save data into the tables entry, label, and entrylabels
+        $preparedStatement = $connection->prepare($sql);
 
-        $newEntrySql = "
-        INSERT INTO entry (date, grade, gradeindex, climbtype, ascenttype, attempts, walltype, climbname, details)
-             VALUES (:date, :grade, :gradeindex, :climbtype, :ascenttype, :attempts, :walltype, :climbname, :details)";
-        $newEntryStatement = $connection->prepare($newEntrySql);
+        $result = $preparedStatement->execute($values);
+        self::close($connection);
 
-        $getNewestEntrySql = "
-        SELECT MAX(id) AS id
-          FROM entry";
-
-        $newLabelSql = "
-        INSERT INTO label (name)
-             VALUES (:name)";
-
-        $newLabelStatement = $connection->prepare($newLabelSql);
-
-        $getNewestLabelSql = "
-        SELECT MAX(id) id
-          FROM label";
-
-        $newEntryLabelSql = "
-        INSERT INTO entrylabels (entryid, labelid)
-             VALUES (:entryid, :labelid)";
-
-        $newEntryLabelStatement = $connection->prepare($newEntryLabelSql);
-
-        foreach ($entries as $entry) {
-            if (!$newEntryStatement->execute([
-                'date' => $entry[0],
-                'grade' => $entry[1],
-                'gradeindex' => $entry[2],
-                'climbtype' => $entry[3],
-                'ascenttype' => $entry[4],
-                'attempts' => empty($entry[5]) ? 1 : $entry[5],
-                'walltype' => $entry[6],
-                'climbname' => $entry[7],
-                'details' => $entry[8]
-            ])) {
-                throw new Exception("Error inserting new entry.");
-            };
-
-            $entryId = $connection->query($getNewestEntrySql, PDO::FETCH_OBJ);
-            if (!$entryId) {
-                throw new Exception("Error getting newest entry ID");
-            }
-
-            if (!$entryId->execute()) {
-                throw new Exception("Error fetching entry ID");
-            }
-
-            $entryId = $entryId->fetchObject();
-
-            $entryId = $entryId->id;
-
-            for ($i = 9; $i < count($entry); $i++) {
-                if (!array_key_exists($entry[$i], self::$labels)) {
-                    // Create a new label first, if necessary.
-                    if (!$newLabelStatement->execute([
-                        'name' => $entry[$i]
-                    ])) {
-                        throw new Exception("Could not insert new label!");
-                    };
-
-                    // A new label exists, reload the labels array!
-                    self::loadAllLabels();
-                }
-
-                // Create a new entrylabel row.
-                $newEntryLabelStatement->execute([
-                    'entryid' => $entryId,
-                    'labelid' => self::$labels[$entry[$i]]
-                ]);
-            }
+        if (!$result) {
+            throw new Exception("Could not insert into database table!");
         }
     }
 
     /**
-     * Fetches all available labels.
+     * Update a table.
      *
+     * @param string $table The table's name
+     * @param array $columns The columns to be updated
+     * @param array $values The values the columns will be updated with
      * @return void
      */
-    private static function loadAllLabels()
+    public static function update(string $table, array $columns, array $values)
+    {
+        $sql = "
+        UPDATE " . $table . "
+           SET ";
+    }
+
+    /**
+     * Select rows from the table.
+     *
+     * @param string $table The name of the table to select from.
+     * @param array $columns The columns to return.
+     * @param array $where The content of the WHERE clause
+     * @return object
+     */
+    public static function select(string $table, array $columns, array $where): object
     {
         $connection = self::connect();
 
-        $query = "
-        SELECT *
-          FROM label
-        ";
+        $sql = "
+        SELECT ";
 
-        self::$labels = [];
-        $result = $connection->query($query, PDO::FETCH_OBJ);
+        if (count($columns) === 0) {
+            $sql .= '*';
+        } else {
+            for ($i = 0; $i < count($columns) - 1; $i++) {
+                $sql .= $columns[$i] . ', ';
+            }
 
-        foreach ($result as $label) {
-            self::$labels[$label->name] = $label->id;
+            $sql .= $columns[count($columns) - 1];
         }
 
-        $connection = null;
+        $sql .= " FROM " . $table;
+
+        if (count($where) > 0) {
+            // TODO
+        }
+
+        $statement = $connection->query($sql);
+       
+        if (!$statement) {
+            self::close($connection);
+            throw new Exception("Could not query SQL statement!");
+        }
+
+        if (!$statement->execute()) {
+            self::close($connection);
+            throw new Exception("Could not execute the SQL statement!");
+        }
+
+        self::close($connection);
+        return $statement;
     }
 }
