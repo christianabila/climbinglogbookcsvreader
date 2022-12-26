@@ -44,12 +44,20 @@ class Entry
      */
     private string $climbType;
 
+    public const CLIMBTYPE_BOULDER = 'Boulder';
+    public const CLIMBTYPE_SPORTCLIMB = 'Sport climb';
+
     /**
      * The ascent type: Onsight, Flash, Redpoint
      *
      * @var string
      */
     private string $ascentType;
+
+    public const ASCENTTYPE_ONSIGHT = 'Onsight';
+    public const ASCENTTYPE_FLASH = 'Flash';
+    public const ASCENTTYPE_REDPOINT = 'Redpoint';
+    public const ASCENTTYPE_PINKPOINT = 'Pinkpoint';
 
     /**
      * The number of attempts to send the climb
@@ -65,6 +73,11 @@ class Entry
      */
     private string $wallType;
 
+    public const WALLTYPE_SLAB = 'Slab';
+    public const WALLTYPE_VERT = 'Vert';
+    public const WALLTYPE_OVERHANG = 'Overhang';
+    public const WALLTYPE_ROOF = 'Roof';
+ 
     /**
      * The climb's name
      *
