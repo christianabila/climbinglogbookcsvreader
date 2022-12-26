@@ -82,7 +82,6 @@ class Entry
     /**
      * Construct a new Entry object
      *
-     * @param int $id
      * @param string $date
      * @param string $grade
      * @param int $gradeIndex
@@ -92,20 +91,23 @@ class Entry
      * @param string $wallType
      * @param string $climbName
      * @param string $details
+     * @param int|null $id (optional)The database table ID
      */
     public function __construct(
-        $id,
-        $date,
-        $grade,
-        $gradeIndex,
-        $climbType,
-        $ascentType,
-        $attempts,
-        $wallType,
-        $climbName,
-        $details
+        string $date,
+        string $grade,
+        int $gradeIndex,
+        string $climbType,
+        string $ascentType,
+        int $attempts,
+        string $wallType,
+        string $climbName,
+        string $details,
+        ?int $id = null
     ) {
-        $this->setId($id);
+        if (isset($id)) {
+            $this->setId($id);
+        }
         $this->setDate($date);
         $this->setGrade($grade);
         $this->setGradeIndex($gradeIndex);
