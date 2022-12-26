@@ -7,7 +7,8 @@
     "autoload": {
         "psr-4": {
             "ClimbingLogbook\\": "/",
-            "ClimbingLogbook\\Controller\\": "src/Controller/"
+            "ClimbingLogbook\\Controller\\": "src/Controller/",
+            "ClimbingLogbook\\Model\\": "src/Model/"
         }
     },
     "require-dev": {
