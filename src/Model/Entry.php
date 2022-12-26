@@ -23,20 +23,60 @@ class Entry
      */
     private string $date;
 
+    /**
+     * The grade of the climb
+     *
+     * @var string
+     */
     private string $grade;
 
+    /**
+     * The internal index of the grade
+     *
+     * @var integer
+     */
     private int $gradeIndex;
 
+    /**
+     * The climb's type: Boulder, Sport climb
+     *
+     * @var string
+     */
     private string $climbType;
 
+    /**
+     * The ascent type: Onsight, Flash, Redpoint
+     *
+     * @var string
+     */
     private string $ascentType;
 
+    /**
+     * The number of attempts to send the climb
+     *
+     * @var integer
+     */
     private int $attempts;
 
+    /**
+     * The wall type: Slab, Vert, Overhang, Roof
+     *
+     * @var string
+     */
     private string $wallType;
 
+    /**
+     * The climb's name
+     *
+     * @var string
+     */
     private string $climbName;
 
+    /**
+     * Comments on the climb
+     *
+     * @var string
+     */
     private string $details;
 
     /**
@@ -176,7 +216,12 @@ class Entry
         $this->gradeIndex = $gradeIndex;
     }
     
-    public function getClimbType()
+    /**
+     * Get the value of the attribute 'climbType'
+     *
+     * @return string
+     */
+    public function getClimbType(): string
     {
         return $this->climbType;
     }
@@ -215,7 +260,12 @@ class Entry
         $this->ascentType = $ascentType;
     }
 
-    public function getAttempts()
+    /**
+     * Get the value of the attribute 'attempts'
+     *
+     * @return int
+     */
+    public function getAttempts(): int
     {
         return $this->attempts;
     }
