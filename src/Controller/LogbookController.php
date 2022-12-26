@@ -35,7 +35,6 @@ class LogbookController
          // I will save data into the tables entry, label, and entrylabels.
         foreach ($entries as $entry) {
             DatabaseController::insert(new Entry(
-                0,
                 $entry[0],
                 $entry[1],
                 $entry[2],
