@@ -196,9 +196,9 @@ class Entry
     /**
      * Get the value of the attribute 'gradeIndex'
      *
-     * @return void
+     * @return int
      */
-    public function getGradeIndex()
+    public function getGradeIndex(): int
     {
         return $this->gradeIndex;
     }
