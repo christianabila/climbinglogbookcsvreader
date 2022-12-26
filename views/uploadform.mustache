@@ -5,3 +5,10 @@
         <button class="btn btn-primary" value="Upload file" type="submit">Upload file</button>
     </div>
 </form>
+{{#uploadresult}}
+<div class="alert alert-{{#success}}success{{/success}}{{#error}}danger{{/error}} alert-dismissible" role="alert">
+  {{#success}}<strong>Success!</strong> CSV file was uploaded and content saved in the database.{{/success}}
+  {{#error}}<strong>Error!</strong> {{{error}}}{{/error}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{{/uploadresult}}
