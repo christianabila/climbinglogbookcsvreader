@@ -20,6 +20,7 @@ $version = $_ENV['VERSION'];
 
 $bootstrap_css = $_ENV['BOOTSTRAP_CSS'];
 $bootstrap_js = $_ENV['BOOTSTRAP_JS'];
+$main_css = $_ENV['MAIN_CSS'];
 
 if (isset($_FILES['csvfile'])) {
     UploadController::validate($_FILES['csvfile']);
@@ -45,4 +46,5 @@ echo $mustacheEngine->render('mainframe', [
     'appname' => $appname,
     'bootstrap_css' => $bootstrap_css,
     'bootstrap_js' => $bootstrap_js,
+    'main_css' => $main_css,
 ]);
